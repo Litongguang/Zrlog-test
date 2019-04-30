@@ -36,16 +36,8 @@ public class WebTools {
         return ip;
     }
 
-    public static String getHomeUrlWithHost(HttpServletRequest request) {
-        return "//" + request.getHeader("host") + request.getContextPath() + "/";
-    }
-
-    public static String getHomeUrlWithHostNotProtocol(HttpServletRequest request) {
-        return request.getHeader("host") + request.getContextPath() + "/";
-    }
-
     public static String getHomeUrl(HttpServletRequest request) {
-        return request.getContextPath() + "/";
+        return "//" + request.getHeader("host") + request.getContextPath() + "/";
     }
 
     public static String htmlEncode(String source) {

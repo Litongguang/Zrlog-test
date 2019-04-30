@@ -1,14 +1,12 @@
 package com.zrlog.web.handler;
 
+import com.googlecode.htmlcompressor.compressor.HtmlCompressor;
 import com.hibegin.common.util.IOUtil;
 import com.hibegin.common.util.http.handle.CloseResponseHandle;
 import com.zrlog.service.CacheService;
 import org.htmlcleaner.HtmlCleaner;
 import org.htmlcleaner.SimpleHtmlSerializer;
 import org.htmlcleaner.TagNode;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,7 +26,7 @@ class ResponseRenderPrintWriter extends PrintWriter {
     private static final Logger LOGGER = LoggerFactory.getLogger(ResponseRenderPrintWriter.class);
 
     private final StringBuilder builder = new StringBuilder();
-    //private HtmlCompressor compressor = new HtmlCompressor();
+    private HtmlCompressor compressor = new HtmlCompressor();
     private String body;
     private boolean compress;
     private long startTime = System.currentTimeMillis();
@@ -49,9 +47,9 @@ class ResponseRenderPrintWriter extends PrintWriter {
     ResponseRenderPrintWriter(OutputStream out, boolean compress, String baseUrl, String endFlag, HttpServletRequest request, HttpServletResponse response, String charset) {
         super(out);
         this.compress = compress;
-        //compressor.setRemoveIntertagSpaces(true);
-        //compressor.setRemoveComments(true);
-        //compressor.setRemoveSurroundingSpaces("span,i,button");
+        compressor.setRemoveIntertagSpaces(true);
+        compressor.setRemoveComments(true);
+        compressor.setRemoveSurroundingSpaces("span,i,button");
         this.baseUrl = baseUrl;
         this.endFlag = endFlag;
         this.request = request;
@@ -136,8 +134,7 @@ class ResponseRenderPrintWriter extends PrintWriter {
             currentBody = currentBody.replace(entry.getKey(), entry.getValue());
         }
         if (compress) {
-            Document doc = Jsoup.parse(currentBody);
-            currentBody = doc.outerHtml();
+            currentBody = compressor.compress(currentBody);
         }
         currentBody = currentBody + "<!--" + (System.currentTimeMillis() - startTime) + "ms-->";
         return currentBody;
