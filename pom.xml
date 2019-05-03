@@ -10,7 +10,7 @@
         <module>common</module>
         <module>data</module>
     </modules>
-    <packaging>pom</packaging>
+    <packaging>war</packaging>
     <name>zrlog</name>
     <url>https://www.zrlog.com</url>
 
